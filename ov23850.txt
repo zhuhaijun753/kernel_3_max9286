@@ -1,0 +1,42 @@
+tegra210-p4573-2180.dts~:396:			/delete-node/ ov23850_a@10;
+tegra210-p4573-2180.dts~:403:		/delete-node/ ov23850_c@36;
+tegra210-jetson-cv-camera-li-mipi-adpt-a00.dts:57:			/delete-node/ ov23850_a@10;
+tegra210-jetson-cv-camera-li-mipi-adpt-a00.dts:63:		/delete-node/ ov23850_c@36;
+tegra210-jetson-cv-p2597-2180-a00-imx274.dts:84:			/delete-node/ ov23850_a@10;
+tegra210-jetson-cv-p2597-2180-a00-imx274.dts:90:		/delete-node/ ov23850_c@36;
+tegra210-platforms/tegra210-jetson-cv-camera-e3323-a00.dtsi:69:			ov23850_a@10 {
+tegra210-platforms/tegra210-jetson-cv-camera-e3323-a00.dtsi:87:		ov23850_c@36 {
+tegra210-platforms/tegra210-jetson-cv-camera-modules.dtsi~:84:			e3323_cam0: ov23850_a@10 {
+tegra210-platforms/tegra210-jetson-cv-camera-modules.dtsi~:152:		e3323_cam1: ov23850_c@36 {
+tegra210-platforms/tegra210-jetson-cv-camera-modules.dtsi:84:			e3323_cam0: ov23850_a@10 {
+tegra210-platforms/tegra210-jetson-cv-camera-modules.dtsi:152:		e3323_cam1: ov23850_c@36 {
+tegra210-platforms/tegra210-camera-e3323-a00.dtsi:33:						remote-endpoint = <&ov23850_out0>;
+tegra210-platforms/tegra210-camera-e3323-a00.dtsi:41:						remote-endpoint = <&ov23850_out1>;
+tegra210-platforms/tegra210-camera-e3323-a00.dtsi:60:			ov23850_a@10 {
+tegra210-platforms/tegra210-camera-e3323-a00.dtsi:61:				compatible = "nvidia,ov23850";
+tegra210-platforms/tegra210-camera-e3323-a00.dtsi:69:				sensor_model ="ov23850";
+tegra210-platforms/tegra210-camera-e3323-a00.dtsi:275:						ov23850_out0: endpoint {
+tegra210-platforms/tegra210-camera-e3323-a00.dtsi:317:		ov23850_c@36 {
+tegra210-platforms/tegra210-camera-e3323-a00.dtsi:318:			compatible = "nvidia,ov23850";
+tegra210-platforms/tegra210-camera-e3323-a00.dtsi:326:			sensor_model ="ov23850";
+tegra210-platforms/tegra210-camera-e3323-a00.dtsi:401:					ov23850_out1: endpoint {
+tegra210-platforms/tegra210-camera-e3323-a00.dtsi:455:					devname = "ov23850 6-0010";
+tegra210-platforms/tegra210-camera-e3323-a00.dtsi:457:					proc-device-tree = "/proc/device-tree/host1x/i2c@546c0000/ov23850_a@10";
+tegra210-platforms/tegra210-camera-e3323-a00.dtsi:476:					devname = "ov23850 0-0036";
+tegra210-platforms/tegra210-camera-e3323-a00.dtsi:478:					proc-device-tree = "/proc/device-tree/i2c@7000c000/ov23850_c@36";
+tegra210-p4573-2180.dts:396:			/delete-node/ ov23850_a@10;
+tegra210-p4573-2180.dts:403:		/delete-node/ ov23850_c@36;
+tegra210-jetson-cv-camera-li-mipi-adpt-a01-devkit.dts:56:			/delete-node/ ov23850_a@10;
+tegra210-jetson-cv-camera-li-mipi-adpt-a01-devkit.dts:62:		/delete-node/ ov23850_c@36;
+tegra210-plugin-manager/tegra210-jetson-cv-camera-plugin-manager.dtsi:108:					devname = "ov23850 6-0010";
+tegra210-plugin-manager/tegra210-jetson-cv-camera-plugin-manager.dtsi:109:					proc-device-tree = "/proc/device-tree/host1x/i2c@546c0000/ov23850_a@10";
+tegra210-plugin-manager/tegra210-jetson-cv-camera-plugin-manager.dtsi:133:					devname = "ov23850 0-0036";
+tegra210-plugin-manager/tegra210-jetson-cv-camera-plugin-manager.dtsi:134:					proc-device-tree = "/proc/device-tree/i2c@7000c000/ov23850_c@36";
+tegra210-plugin-manager/tegra210-jetson-cv-camera-plugin-manager.dtsi:188:					remote-endpoint = <&ov23850_out0>;
+tegra210-plugin-manager/tegra210-jetson-cv-camera-plugin-manager.dtsi:203:					remote-endpoint = <&ov23850_out1>;
+tegra210-plugin-manager/tegra210-jetson-cv-camera-plugin-manager.dtsi~:108:					devname = "ov23850 6-0010";
+tegra210-plugin-manager/tegra210-jetson-cv-camera-plugin-manager.dtsi~:109:					proc-device-tree = "/proc/device-tree/host1x/i2c@546c0000/ov23850_a@10";
+tegra210-plugin-manager/tegra210-jetson-cv-camera-plugin-manager.dtsi~:133:					devname = "ov23850 0-0036";
+tegra210-plugin-manager/tegra210-jetson-cv-camera-plugin-manager.dtsi~:134:					proc-device-tree = "/proc/device-tree/i2c@7000c000/ov23850_c@36";
+tegra210-plugin-manager/tegra210-jetson-cv-camera-plugin-manager.dtsi~:188:					remote-endpoint = <&ov23850_out0>;
+tegra210-plugin-manager/tegra210-jetson-cv-camera-plugin-manager.dtsi~:203:					remote-endpoint = <&ov23850_out1>;

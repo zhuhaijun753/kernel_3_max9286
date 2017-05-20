@@ -1,0 +1,442 @@
+/*
+ * Copyright (c) 2015-2016, NVIDIA CORPORATION.  All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#include <dt-bindings/media/camera.h>
+#include <dt-bindings/platform/t210/t210.h>
+
+/ {
+	host1x {
+		vi {
+			num-channels = <3>;
+			ports {
+				#address-cells = <1>;
+				#size-cells = <0>;
+				port@0 {
+					reg = <0>;
+					e3323_vi_in2: endpoint {
+						csi-port = <0>;
+						bus-width = <4>;
+						remote-endpoint = <&ov23850_out2>;
+					};
+				};
+				port@1 {
+					reg = <1>;
+					e3323_vi_in1: endpoint {
+						csi-port = <2>;
+						bus-width = <4>;
+						remote-endpoint = <&ov23850_out1>;
+					};
+				};
+				port@2 {
+					reg = <2>;
+					e3323_vi_in0: endpoint {
+						csi-port = <4>;
+						bus-width = <4>;
+						remote-endpoint = <&ov23850_out0>;
+					};
+				};
+				
+			};
+		};
+
+		i2c@546c0000 {
+			ov23850_a@48 {
+				compatible = "nvidia,ov23850";
+
+				reg = <0x48>;
+				/* Physical dimensions of sensor */
+				physical_w = "7.3998";
+				physical_h = "5.5998";
+
+				/* Sensor Model */
+				sensor_model ="ov23850";
+
+				/* Define any required hw resources needed by driver */
+				/* ie. clocks, io pins, power sources */
+				avdd-reg = "vana";
+				dvdd-reg = "vdig";
+				iovdd-reg = "vif";
+				vcmvdd-reg = "vvcm";
+
+				/* Defines number of frames to be dropped by driver internally after applying */
+				/* sensor crop settings. Some sensors send corrupt frames after applying */
+				/* crop co-ordinates */
+				post_crop_frame_drop = "0";
+
+				
+				mode0 { // OV23850_MODE_5632X4224
+					mclk_khz = "24000";
+					num_lanes = "4";
+					tegra_sinterface = "serial_a";
+					discontinuous_clk = "no";
+					dpcm_enable = "false";
+					cil_settletime = "0";
+
+					active_w = "1280";
+					active_h = "720";
+					pixel_t = "yuyv";
+					readout_orientation = "270";
+					line_length = "6000";
+					inherent_gain = "1";
+					mclk_multiplier = "25";
+					pix_clk_hz = "600000000";
+
+					min_gain_val = "1.0";
+					max_gain_val = "15.5";
+					min_hdr_ratio = "1";
+					max_hdr_ratio = "64";
+					min_framerate = "3.05185";
+					max_framerate = "20.8";
+					min_exp_time = "20";
+					max_exp_time = "327350";
+					embedded_metadata_height = "0";
+				};
+				
+				mode1 { // OV23850_MODE_5632X3168
+					mclk_khz = "24000";
+					num_lanes = "4";
+					tegra_sinterface = "serial_a";
+					discontinuous_clk = "no";
+					dpcm_enable = "false";
+					cil_settletime = "0";
+
+					active_w = "1280";
+					active_h = "720";
+					pixel_t = "yuyv";
+					readout_orientation = "270";
+					line_length = "5922";
+					inherent_gain = "1";
+					mclk_multiplier = "25";
+					pix_clk_hz = "600000000";
+
+					min_gain_val = "1.0";
+					max_gain_val = "15.5";
+					min_hdr_ratio = "1";
+					max_hdr_ratio = "64";
+					min_framerate = "3.09135";
+					max_framerate = "30";
+					min_exp_time = "19.74";
+					max_exp_time = "323094";
+					embedded_metadata_height = "0";
+				};
+				ports {
+					#address-cells = <1>;
+					#size-cells = <0>;
+
+					port@0 {
+						reg = <0>;
+						ov23850_out0: endpoint {
+							csi-port = <0>;
+							bus-width = <4>;
+							remote-endpoint = <&e3323_vi_in0>;
+						};
+					};
+				};
+			};
+			lc898212@72 {
+				compatible = "nvidia,lc898212";
+				reg = <0x72>;
+
+				type = "default";
+				min_focus_distance = "10.0"; /* 1.0f/0.1f */
+				hyper_focal = "0.2"; /* 1.0f/5.0f */
+				focal_length = "4.73";
+				f_number = "2.2";
+				aperture = "2.2";
+				support_mfi = "true";				
+			};
+		};
+	};
+
+	i2c@7000c000 {
+		ov23850_c@48 {
+			compatible = "nvidia,ov23850";
+
+			reg = <0x48>;
+			/* Physical dimensions of sensor */
+			physical_w = "7.3998";
+			physical_h = "5.5998";
+
+			/* Sensor Model */
+			sensor_model ="ov23850";
+
+			/* Define any required hw resources needed by driver */
+			/* ie. clocks, io pins, power sources */
+			avdd-reg = "vana";
+			dvdd-reg = "vdig";
+			iovdd-reg = "vif";
+			vcmvdd-reg = "vvcm";
+			
+			post_crop_frame_drop = "0";
+
+			mode0 { // OV23850_MODE_5632X4224
+				mclk_khz = "24000";
+				num_lanes = "4";
+				tegra_sinterface = "serial_c";
+				discontinuous_clk = "no";
+				dpcm_enable = "false";
+				cil_settletime = "0";
+
+				active_w = "1280";
+				active_h = "720";
+				pixel_t = "yuyv";
+				readout_orientation = "270";
+				line_length = "6000";
+				inherent_gain = "1";
+				mclk_multiplier = "25";
+				pix_clk_hz = "600000000";
+
+				min_gain_val = "1.0";
+				max_gain_val = "15.5";
+				min_hdr_ratio = "1";
+				max_hdr_ratio = "64";
+				min_framerate = "3.05185";
+				max_framerate = "20.8";
+				min_exp_time = "20";
+				max_exp_time = "327350";
+				embedded_metadata_height = "0";
+			};
+
+			mode1 { // OV23850_MODE_5632X3168
+				mclk_khz = "24000";
+				num_lanes = "4";
+				tegra_sinterface = "serial_c";
+				discontinuous_clk = "no";
+				dpcm_enable = "false";
+				cil_settletime = "0";
+
+				active_w = "1280";
+				active_h = "720";
+				pixel_t = "yuyv";
+				readout_orientation = "270";
+				line_length = "5922";
+				inherent_gain = "1";
+				mclk_multiplier = "25";
+				pix_clk_hz = "600000000";
+
+				min_gain_val = "1.0";
+				max_gain_val = "15.5";
+				min_hdr_ratio = "1";
+				max_hdr_ratio = "64";
+				min_framerate = "3.09135";
+				max_framerate = "30";
+				min_exp_time = "19.74";
+				max_exp_time = "323094";
+				embedded_metadata_height = "0";
+			};
+			ports {
+				#address-cells = <1>;
+				#size-cells = <0>;
+
+				port@0 {
+					reg = <0>;
+					ov23850_out1: endpoint {
+						csi-port = <2>;
+						bus-width = <4>;
+						remote-endpoint = <&e3323_vi_in1>;
+					};
+				};
+			};
+		};
+		lc898212@72 {
+			compatible = "nvidia,lc898212";
+			reg = <0x72>;
+
+			/* physical camera layer interface tags */
+			type = "default";
+			min_focus_distance = "10.0"; /* 1.0f/0.1f */
+			hyper_focal = "0.2"; /* 1.0f/5.0f */
+			focal_length = "4.73";
+			f_number = "2.2";
+			aperture = "2.2";
+			support_mfi = "true";			
+		};
+	};
+
+	
+	i2c@7000c400 {
+		ov23850_e@48 {
+			compatible = "nvidia,ov23850";
+
+			reg = <0x48>;
+			/* Physical dimensions of sensor */
+			physical_w = "7.3998";
+			physical_h = "5.5998";
+
+			/* Sensor Model */
+			sensor_model ="ov23850";
+
+			/* Define any required hw resources needed by driver */
+			/* ie. clocks, io pins, power sources */
+			avdd-reg = "vana";
+			dvdd-reg = "vdig";
+			iovdd-reg = "vif";
+			vcmvdd-reg = "vvcm";
+			
+			post_crop_frame_drop = "0";
+
+			mode0 { // OV23850_MODE_5632X4224
+				mclk_khz = "24000";
+				num_lanes = "4";
+				tegra_sinterface = "serial_c";
+				discontinuous_clk = "no";
+				dpcm_enable = "false";
+				cil_settletime = "0";
+
+				active_w = "1280";
+				active_h = "720";
+				pixel_t = "yuyv";
+				readout_orientation = "270";
+				line_length = "6000";
+				inherent_gain = "1";
+				mclk_multiplier = "25";
+				pix_clk_hz = "600000000";
+
+				min_gain_val = "1.0";
+				max_gain_val = "15.5";
+				min_hdr_ratio = "1";
+				max_hdr_ratio = "64";
+				min_framerate = "3.05185";
+				max_framerate = "20.8";
+				min_exp_time = "20";
+				max_exp_time = "327350";
+				embedded_metadata_height = "0";
+			};
+
+			mode1 { // OV23850_MODE_5632X3168
+				mclk_khz = "24000";
+				num_lanes = "4";
+				tegra_sinterface = "serial_c";
+				discontinuous_clk = "no";
+				dpcm_enable = "false";
+				cil_settletime = "0";
+
+				active_w = "1280";
+				active_h = "720";
+				pixel_t = "yuyv";
+				readout_orientation = "270";
+				line_length = "5922";
+				inherent_gain = "1";
+				mclk_multiplier = "25";
+				pix_clk_hz = "600000000";
+
+				min_gain_val = "1.0";
+				max_gain_val = "15.5";
+				min_hdr_ratio = "1";
+				max_hdr_ratio = "64";
+				min_framerate = "3.09135";
+				max_framerate = "30";
+				min_exp_time = "19.74";
+				max_exp_time = "323094";
+				embedded_metadata_height = "0";
+			};
+			ports {
+				#address-cells = <1>;
+				#size-cells = <0>;
+
+				port@0 {
+					reg = <0>;
+					ov23850_out2: endpoint {
+						csi-port = <4>;
+						bus-width = <4>;
+						remote-endpoint = <&e3323_vi_in2>;
+					};
+				};
+			};
+		};
+		lc898212@72 {
+			compatible = "nvidia,lc898212";
+			reg = <0x72>;
+
+			/* physical camera layer interface tags */
+			type = "default";
+			min_focus_distance = "10.0"; /* 1.0f/0.1f */
+			hyper_focal = "0.2"; /* 1.0f/5.0f */
+			focal_length = "4.73";
+			f_number = "2.2";
+			aperture = "2.2";
+			support_mfi = "true";			
+		};
+	};
+	
+	
+	tegra-camera-platform {
+		compatible = "nvidia, tegra-camera-platform";
+
+		/**
+		* The general guideline for naming badge_info contains 3 parts, and is as follows,
+		* The first part is the camera_board_id for the module; if the module is in a FFD
+		* platform, then use the platform name for this part.
+		* The second part contains the position of the module, ex. “rear” or “front”.
+		* The third part contains the last 6 characters of a part number which is found
+		* in the module's specsheet from the vender.
+		*/
+		modules {
+
+
+			module0 {
+				badge = "e3323_top_CH06P1";
+				position = "top";
+				orientation = "3";
+				drivernode0 {
+					/* Declare PCL support driver (classically known as guid)  */
+					pcl_id = "v4l2_sensor";
+					/* Driver's v4l2 device name */
+					devname = "ov23850 2-0048";
+					/* Declare the device-tree hierarchy to driver instance */
+					proc-device-tree = "/proc/device-tree/i2c@7000c400/ov23850_e@48";
+				};				
+			};
+			
+			module1 {
+				badge = "e3323_top_CH06P1";
+				position = "top";
+				orientation = "3";
+				drivernode0 {
+					/* Declare PCL support driver (classically known as guid)  */
+					pcl_id = "v4l2_sensor";
+					/* Driver's v4l2 device name */
+					devname = "ov23850 0-0048";
+					/* Declare the device-tree hierarchy to driver instance */
+					proc-device-tree = "/proc/device-tree/i2c@7000c000/ov23850_c@48";
+				};				
+			};
+	
+
+
+
+			module2 {
+				badge = "e3323_bottom_CH06P1";
+				position = "bottom";
+				orientation = "3";
+				drivernode0 {
+					/* Declare PCL support driver (classically known as guid)  */
+					pcl_id = "v4l2_sensor";
+					/* Driver's v4l2 device name */
+					devname = "ov23850 6-0048";
+					/* Declare the device-tree hierarchy to driver instance */
+					proc-device-tree = "/proc/device-tree/host1x/i2c@546c0000/ov23850_a@48";
+				};				
+			};
+			
+		};
+	};
+	
+	
+};
+
+

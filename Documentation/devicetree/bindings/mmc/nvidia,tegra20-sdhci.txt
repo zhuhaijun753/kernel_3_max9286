@@ -1,0 +1,42 @@
+* NVIDIA Tegra Secure Digital Host Controller
+
+This controller on Tegra family SoCs provides an interface for MMC, SD,
+and SDIO types of memory cards.
+
+This file documents differences between the core properties described
+by mmc.txt and the properties used by the sdhci-tegra driver.
+
+Required properties:
+- compatible : Should be "nvidia,<chip>-sdhci"
+- base-clk : Integer.
+
+Optional properties:
+- power-gpios : Specify GPIOs for power control
+- tap-delay : Integer. Valid range 0...255.
+- trim-delay : Integer. Valid range 0...31.
+- ddr-trim-delay : Integer. Valid range 0...31.
+- ddr-clk-limit : Integer.
+- max-clk-limit : Integer.
+- built-in : Boolean, indicates whether it is built-in card or not.
+- mmc-ocr-mask : 0: 1V8, 1: 2V8.
+- uhs_mask : Integer. For masking multiple modes OR the suitable values
+	- 0x1  : MMC_UHS_MASK_SDR12
+	- 0x2  :MMC_UHS_MASK_SDR25
+	- 0x4  :MMC_UHS_MASK_SDR50
+	- 0x8  :MMC_UHS_MASK_DDR50
+	- 0x10 :MMC_UHS_MASK_SDR104
+	- 0x20 :MMC_MASK_HS200
+	- 0x40 :MMC_MASK_HS400
+
+Example:
+
+sdhci@c8000200 {
+	compatible = "nvidia,tegra20-sdhci";
+	reg = <0xc8000200 0x200>;
+	interrupts = <47>;
+	cd-gpios = <&gpio 69 0>; /* gpio PI5 */
+	wp-gpios = <&gpio 57 0>; /* gpio PH1 */
+	power-gpios = <&gpio 155 0>; /* gpio PT3 */
+	bus-width = <8>;
+	base-clk = <104000000>;
+};

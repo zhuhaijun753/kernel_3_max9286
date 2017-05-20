@@ -1,0 +1,343 @@
+/*
+ * arch/arm/boot/dts/tegra124-tn8-p1761-1270-a04-e-nobattery.dts
+ *
+ * Copyright (c) 2015, NVIDIA CORPORATION.  All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+/dts-v1/;
+
+#include "tegra124-tn8.dtsi"
+#include "tegra124-platforms/tegra124-tn8-emc-p1761-1270-a00.dtsi"
+#include "tegra124-platforms/tegra124-tn8-power-tree-e1936-1000-a03.dtsi"
+#include "tegra124-platforms/tegra124-tn8-sensor-p1761-1270-a03.dtsi"
+#include "tegra124-platforms/tegra124-tn8-pinmux-p1761-1470-a00.dtsi"
+#include "tegra124-platforms/tegra124-tn8-gpio-p1761-1470-a00.dtsi"
+#include "tegra124-platforms/tegra124-tn8-keys-p1761-1270-a03.dtsi"
+#include "tegra124-platforms/tegra124-tn8-sysedp-p1761-1270-a03.dtsi"
+#include "tegra124-platforms/tegra124-tn8-powermon-p1761-a02.dtsi"
+#include "tegra124-platforms/tegra124-tn8-dfll-p1761-1270-a03.dtsi"
+#include "tegra124-platforms/tegra124-tn8-camera-p1761-1270-a03.dtsi"
+#include "panel-a-wxga-8-0.dtsi"
+#include "panel-a-wuxga-8-0.dtsi"
+#include "tegra124-platforms/tegra124-tn8-hdmi-p1761-1270-a03.dtsi"
+#include "tegra124-platforms/tegra124-tn8-thermal-zone-p1761-1270-a00.dtsi"
+#include <dt-bindings/iio/meter/ina3221x.h>
+#include "tegra124-platforms/tegra124-tn8-usb-devices.dtsi"
+#include "tegra124-platforms/tegra124-tn8-cmu-p1761-1270-a00.dtsi"
+#include "tegra124-platforms/tegra124-tn8-comms.dtsi"
+
+/ {
+	model = "NVIDIA Tegra124 TN8 FFD";
+	compatible = "nvidia,tn8", "nvidia,tegra124";
+	nvidia,dtsfilename = __FILE__;
+	nvidia,boardids = "1761:1270:4";
+	#address-cells = <2>;
+	#size-cells = <2>;
+
+	chosen {
+		bootargs = "tegraid=40.0.0.00.00 vmalloc=256M video=tegrafb console=ttyS0,115200n8 earlyprintk";
+		linux,initrd-start = <0x85000000>;
+		linux,initrd-end = <0x851bc400>;
+	};
+
+	firmware {
+		android {
+			compatible = "android,firmware";
+			hardware = "tn8";
+		};
+	};
+
+	host1x {
+		/* tegradc.0 */
+		dc@54200000 {
+			status = "okay";
+			nvidia,dc-flags = <TEGRA_DC_FLAG_ENABLED>;
+			nvidia,emc-clk-rate = <204000000>;
+			nvidia,cmu-enable = <1>;
+			nvidia,low-v-win = <0x2>;
+			nvidia,fb-bpp = <32>; /* bits per pixel */
+			nvidia,fb-flags = <TEGRA_FB_FLIP_ON_PROBE>;
+		};
+		/* tegradc.1 */
+		dc@54240000 {
+			status = "okay";
+			nvidia,dc-flags = <TEGRA_DC_FLAG_ENABLED>;
+			nvidia,emc-clk-rate = <300000000>;
+			nvidia,cmu-enable = <1>;
+			nvidia,fb-bpp = <32>; /* bits per pixel */
+			nvidia,fb-flags = <TEGRA_FB_FLIP_ON_PROBE>;
+		};
+		dsi {
+			nvidia,dsi-controller-vs = <DSI_VS_1>;
+			status = "okay";
+			panel-a-wxga-8-0 {
+				nvidia,dsi-boardinfo = <1761 0 0 0>;
+				nvidia,panel-rst-gpio = <&gpio TEGRA_GPIO(H, 3) 0>; /* PH3 */
+				nvidia,panel-bl-pwm-gpio = <&gpio TEGRA_GPIO(H, 1) 0>; /* PH1 */
+				disp-default-out {
+					nvidia,out-rotation = <180>;
+				};
+			};
+			panel-a-wuxga-8-0 {
+				nvidia,dsi-boardinfo = <1761 0 0 1>;
+				nvidia,panel-rst-gpio = <&gpio TEGRA_GPIO(N, 4) 0>; /* PN4 */
+				nvidia,panel-bl-pwm-gpio = <&gpio TEGRA_GPIO(H, 1) 0>; /* PH1 */
+				disp-default-out {
+					nvidia,out-rotation = <180>;
+					nvidia,out-flags = <TEGRA_DC_OUT_CONTINUOUS_MODE TEGRA_DC_OUT_INITIALIZED_MODE>;
+				};
+				smartdimmer {
+					status = "disabled";
+				};
+			};
+		};
+	};
+
+	psy_extcon {
+		power-supply,y-cable-extcon-dev = "tegra-otg";
+	};
+
+	usb-devices {
+		maxim-charger {
+			maxim,max-board-vbus-voltage-uv = <12000000>;
+		};
+	};
+
+	i2c@7000c400 {
+		 battery-gauge@0b {
+			onsemi,kernel-threshold-soc = <2>;
+			io-channels = <&ina3221x INA3221_CHAN_INDEX(0, CURRENT, NORMAL)>;
+			io-channel-names = "battery-current";
+			dt-override-status-odm-data = <0x00400000 0x00400000>;
+
+			battery0 {
+				onsemi,kernel-maximum-soc = <88>;
+			};
+
+			battery1 {
+				onsemi,kernel-maximum-soc = <99>;
+			};
+		};
+
+		battery-charger@6b {
+			charger {
+				ti,temp-range = <10 15 25 45 50 60>;
+				ti,charge-current-limit = <520 1040 2600 2600 2600 520>;
+				ti,charge-term-current-limit-milliamp = <1>;
+				dt-override-status-odm-data = <0x00400000 0x00400000>;
+
+				battery0 {
+					battery-mfg = "yoku";
+					ti,charge-voltage-limit-millivolt = <4200>;
+					ti,charge-thermal-voltage-limit = <4200 4200 4200 4200 4200 4200>;
+					ti,soc-range = <56 68 79 91 97 101>;
+					ti,input-voltage-soc-limit = <4200 4280 4360 4440 4520 4600>;
+				};
+
+				battery1 {
+					battery-mfg = "BYD";
+					ti,charge-voltage-limit-millivolt = <4352>;
+					ti,charge-thermal-voltage-limit = <4352 4352 4352 4352 4200 4200>;
+					ti,soc-range = <50 60 70 80 85 90 95 101>;
+					ti,input-voltage-soc-limit = <4200 4280 4360 4440 4520 4600 4680 4760>;
+				};
+			};
+		};
+	};
+
+	i2c@7000d000 {
+		palmas: tps65913 {
+			thermal {
+				status = "okay";
+			};
+
+			gpadc {
+				ti,auto-conversion-period-ms = <500>;
+				auto_conv0 {
+					ti,adc-channel-number = <3>;
+					ti,adc-low-threshold = <1980>;
+					ti,enable-shutdown;
+				};
+			};
+
+			pmic {
+				regulators {
+					ldo3 {
+						regulator-min-microvolt = <3300000>;
+						regulator-max-microvolt = <3300000>;
+						regulator-enable-ramp-delay = <3000>;
+						ti,disable-pull-down;
+					};
+				};
+			};
+		};
+	};
+
+	sysedp_batmon_calc {
+		status = "okay";
+	};
+
+	thermal-zones {
+		PMIC-Die {
+			status = "okay";
+		};
+
+		Battery {
+			thermal-sensors = <&fg_lc709203f>;
+			dt-override-status-odm-data = <0x00400000 0x00400000>;
+		};
+	};
+
+	regulators {
+		regulator@8  {
+			vin-supply = <&ldo3_reg>;
+			regulator-disable-parent-after-enable;
+		};
+	};
+
+	backlight {
+		compatible = "pwm-backlight";
+		status = "okay";
+		panel-a-wuxga-8-0-bl {
+			bl-measured = < 0 1 2 4 5 6 7 8
+					10 11 12 13 14 14 15 16
+					17 18 18 19 20 21 22 23
+					24 25 26 27 28 29 30 31
+					32 33 34 35 36 37 38 39
+					40 41 42 43 44 45 46 47
+					48 49 50 51 52 53 54 55
+					55 56 57 58 59 60 61 62
+					63 64 65 66 67 68 69 70
+					71 72 73 74 75 76 77 78
+					79 80 81 82 83 84 85 86
+					87 88 89 90 91 92 93 94
+					95 96 97 98 99 100 101 102
+					103 104 105 106 107 108 109 110
+					111 112 113 114 115 116 117 118
+					119 120 121 122 123 124 125 126
+					127 128 129 130 131 132 133 134
+					135 136 137 138 139 140 141 142
+					143 144 145 146 147 148 149 150
+					151 152 153 154 155 156 157 158
+					159 160 161 162 163 164 165 166
+					167 168 169 170 171 172 173 174
+					175 176 177 178 179 180 181 182
+					183 184 185 186 187 188 189 190
+					191 192 193 194 195 196 197 198
+					199 200 201 202 203 204 205 206
+					207 208 209 210 211 212 213 214
+					215 216 217 218 219 220 221 222
+					223 224 225 226 227 228 229 230
+					231 232 233 234 235 236 237 238
+					239 240 241 242 243 244 245 246
+					247 248 249 250 251 253 254 255 >;
+			bl-nonlinear = < 0 1 1 2 2 3 3 4
+					 4 5 5 6 7 7 8 8
+					 9 9 10 10 11 11 12 12
+					 13 14 14 15 15 16 16 17
+					 17 18 18 19 20 20 21 21
+					 22 22 23 23 24 24 25 25
+					 26 27 27 28 28 29 29 30
+					 30 31 31 32 33 33 34 34
+					 35 35 36 36 37 37 38 38
+					 39 40 40 41 41 42 42 43
+					 43 44 44 45 46 46 47 47
+					 48 48 49 49 50 50 51 52
+					 52 53 53 54 54 55 55 56
+					 56 57 57 58 59 59 60 60
+					 61 61 62 62 63 63 64 65
+					 65 66 66 67 67 68 68 69
+					 69 70 70 71 72 72 73 73
+					 74 74 75 75 76 76 77 78
+					 78 79 79 80 80 81 81 82
+					 82 83 83 84 85 85 86 86
+					 87 87 88 88 89 89 90 92
+					 94 96 97 99 101 103 105 107
+					 109 110 112 114 116 118 120 122
+					 123 125 127 129 131 133 134 136
+					 138 140 142 144 146 147 149 151
+					 153 155 157 159 160 162 164 166
+					 168 170 172 173 175 177 179 181
+					 183 185 186 188 190 192 194 196
+					 198 199 201 203 205 207 209 211
+					 212 214 216 218 220 222 223 225
+					 227 229 231 233 235 236 238 240
+					 242 244 246 248 249 251 253 255 >;
+		};
+	};
+
+	udc@7d000000 {
+		nvidia,id-detection-type = <1>;
+		nvidia,enable-pmu-vbus-detection;
+		nvidia,enable-aca-rid-detection;
+		extcon-cables = <&extcon_cable_xlate 0 &extcon_cable_xlate 4 &extcon_cable_xlate 5>;
+		extcon-cable-names = "vbus", "aca-rb", "aca-rc";
+		#extcon-cells = <1>;
+		status = "okay";
+	};
+
+	otg@7d000000 {
+		nvidia,enable-pmu-vbus-detection;
+		nvidia,id-detection-type = <1>;
+		nvidia,enable-y-cable-detection;
+		nvidia,enable-aca-rid-detection;
+		extcon-cables = <&extcon_cable_xlate 0 &extcon_cable_xlate 1 &extcon_cable_xlate 2 &extcon_cable_xlate 3 &extcon_cable_xlate 4 &extcon_cable_xlate 5>;
+		extcon-cable-names = "vbus", "id", "aca-ra", "y-cable", "aca-rb", "aca-rc";
+		#extcon-cells = <1>;
+		status = "okay";
+	};
+
+	ehci@7d000000 {
+		nvidia,port-otg;
+		nvidia,has-hostpc;
+		nvidia,turn-off-vbus-on-lp0;
+		nvidia,id-detection-type = <2>;
+		nvidia,hssync-start-delay = <0>;
+		nvidia,idle-wait-delay = <17>;
+		nvidia,elastic-limit = <16>;
+		nvidia,term-range-adj = <6>;
+		nvidia,xcvr-setup = <15>;
+		nvidia,xcvr-lsfslew = <2>;
+		nvidia,xcvr-lsrslew = <2>;
+		nvidia,xcvr-use-fuses;
+		nvidia,vbus-oc-map = <4>;
+		nvidia,xcvr-setup-offset = <0>;
+		status = "disabled";
+	};
+
+	camera-pcl {
+		profiles {
+			ov5693_1: ov5693@2_0010 {
+				use_of_node = "yes";
+				dev_name = "ov5693";
+				num = <0>;
+				avdd_ov5693-supply = <&ldo4_reg>;
+				vdd_af1-supply = <&ldo7_reg>;
+				dovdd-supply = <&vdd_cam_af>;
+				reset-gpios = <&gpio TEGRA_GPIO(BB, 5) 0>;
+			};
+			ov5693_2: ov5693@2_0036 {
+				use_of_node = "yes";
+				dev_name = "ov5693";
+				num = <1>;
+				vana-supply = <&ldo7_reg>;
+				vif-supply = <&vdd_cam_af>;
+				cam2-gpios = <&gpio TEGRA_GPIO(BB, 6) 0>;
+			};
+		};
+	};
+};
+

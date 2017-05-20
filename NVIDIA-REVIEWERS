@@ -1,0 +1,335 @@
+This is a reviewers file that can be parsed by get_nv_reviewers.py that
+internally uses scripts/get_maintainer.pl from kernel.
+
+See the MAINTAINERS file in the Linux kernel source tree for details of the
+file format. The file format is defined by the upstream Linux kernel community,
+so don't modify it without upstreaming any changes to get_maintainer.pl.
+
+Descriptions of section entries (copied from MAINTAINERS):
+
+	P: Person (obsolete)
+	M: Mail patches to: FullName <address@domain>
+	L: Mailing list that is relevant to this area
+	W: Web-page with status/info
+	Q: Patchwork web based patch tracking system site
+	T: SCM tree type and location.  Type is one of: git, hg, quilt, stgit, topgit.
+	S: Status, one of the following:
+	   Supported:	Someone is actually paid to look after this.
+	   Maintained:	Someone actually looks after it.
+	   Odd Fixes:	It has a maintainer but they don't have time to do
+			much other than throw the odd patch in. See below..
+	   Orphan:	No current maintainer [but maybe you could take the
+			role as you write your new code].
+	   Obsolete:	Old code. Something tagged obsolete generally means
+			it has been replaced by a better system and you
+			should be using that.
+	F: Files and directories with wildcard patterns.
+	   A trailing slash includes all files and subdirectory files.
+	   F:	drivers/net/	all files in and below drivers/net
+	   F:	drivers/net/*	all files in drivers/net, but not below
+	   F:	*/net/*		all files in "any top level directory"/net
+	   One pattern per line.  Multiple F: lines acceptable.
+	X: Files and directories that are NOT maintained, same rules as F:
+	   Files exclusions are tested before file matches.
+	   Can be useful for excluding a specific subdirectory, for instance:
+	   F:	net/
+	   X:	net/ipv6/
+	   matches all files in and below net excluding net/ipv6/
+	K: Keyword perl extended regex pattern to match content in a
+	   patch or file.  For instance:
+	   K: of_get_profile
+	      matches patches or files that contain "of_get_profile"
+	   K: \b(printk|pr_(info|err))\b
+	      matches patches or files that contain one or more of the words
+	      printk, pr_info or pr_err
+	   One regex pattern per line.  Multiple K: lines acceptable.
+
+Note: For the hard of thinking, this list is meant to remain in alphabetical
+order. If you could add yourselves to it in alphabetical order that would be
+so much easier [Ed]
+
+Maintainers List (try to look for most precise areas first)
+
+		-----------------------------------
+
+BUS
+M:	Laxman Dewangan <ldewangan@nvidia.com>
+L:	sw-mobile-kernel-bus@exchange.nvidia.com
+S:	Supported
+F:	arch/arm/mach-tegra/devices.c
+F:	arch/arm/mach-tegra/io.c
+F:	drivers/pci/host/pci-tegra.c
+F:	drivers/base/regmap/regmap-mmio.c
+F:	drivers/i2c/*
+F:	drivers/i2c/busses/*
+F:	drivers/mfd/aat2870-core.c
+F:	drivers/mfd/max77663-core.c
+F:	drivers/mfd/max8831.c
+F:	drivers/mfd/max8907c-irq.c
+F:	drivers/rtc/rtc-*.c
+F:	drivers/spi/*
+F:	drivers/tty/serial/*
+F:	drivers/video/backlight/backlight.c
+F:	drivers/video/backlight/max8831_bl.c
+F:	drivers/video/backlight/pwm_bl.c
+F:	drivers/video/backlight/tegra_pwm_bl.c
+
+CPU
+M:	Bo Yan <byan@nvidia.com>
+M:	Alexander Van Brunt <avanbrunt@nvidia.com>
+L:	sw-mobile-cpu@exchange.nvidia.com
+S:	Supported
+F:	arch/arm64/mach-tegra/denver-hardwood.c
+F:	arch/arm64/mach-tegra/denver-knobs.c
+F:	arch/arm64/mach-tegra/hotplug-denver.c
+F:	arch/arm64/mach-tegra/platsmp.c
+F:	arch/arm/mach-tegra/cpu-tegra3.c
+F:	arch/arm/mach-tegra/cpu-tegra.c
+F:	arch/arm/mach-tegra/flowctrl.c
+F:	arch/arm/mach-tegra/hotplug.c
+F:	arch/arm/mach-tegra/platsmp.c
+F:	arch/arm/mach-tegra/reset.c
+F:	drivers/clocksource/tegra-nvtimers.c
+F:	drivers/cpuidle/denver-cpuidle.c
+F:	drivers/irqchip/irq-tegra.c
+F:	drivers/misc/tegra_timerinfo.c
+F:	drivers/platform/tegra/tegra_fiq_debugger.c
+F:	drivers/platform/tegra/tegra_ptm*.c
+
+ARM64 PORT (AARCH64 ARCHITECTURE)
+M:	Bo Yan <byan@nvidia.com>
+M:	Alexander Van Brunt <avanbrunt@nvidia.com>
+L:	sw-mobile-cpu@exchange.nvidia.com
+S:	Supported
+F:	arch/arm64/
+F:	Documentation/arm64/
+X:	arch/arm64/mach-tegra/
+X:	arch/arm64/include/asm/mach/
+X:	arch/arm64/boot/dts/
+X:	arch/arm64/configs/
+
+CAMERA
+M:	Nick Haemel <nhaemel@nvidia.com>
+S:	Supported
+F:	drivers/media/platform/tegra/*
+F:	drivers/media/platform/tegra/cam_dev/*
+
+DISPLAY
+M:	Jon Mayo <jmayo@nvidia.com>
+L:	sw-mobile-display@exchange.nvidia.com
+S:	Supported
+F:	arch/arm/mach-tegra/panel-*.c
+F:	arch/arm64/mach-tegra/panel-*.c
+F:	drivers/misc/tegra-cec/tegra_cec.c
+F:	drivers/video/tegra/fb.c
+F:	drivers/video/tegra/dc/
+X:	drivers/video/tegra/dc/hdmihdcp.c
+X:	drivers/video/tegra/dc/nvhdcp.c
+X:	drivers/video/tegra/dc/nvhdcp_hdcp22_methods.c
+
+
+HDCP
+M:	Sharath Sarangpur <ssarangpur@nvidia.com>
+L:	sw-mobile-security@exchange.nvidia.com
+S:	Supported
+F:	drivers/video/tegra/dc/hdmihdcp.c
+F:	drivers/video/tegra/dc/nvhdcp.c
+F:	drivers/video/tegra/dc/nvhdcp_hdcp22_methods.c
+
+GPU
+M:	Terje Bergstrom <tbergstrom@nvidia.com>
+L:	sw-mobile-host1x@exchange.nvidia.com
+S:	Supported
+F:	drivers/gpu/nvgpu/gk20a/
+F:	drivers/gpu/nvgpu/gm20b/
+
+HOST
+M:	Arto Merilainen <amerilainen@nvidia.com>
+L:	sw-mobile-host1x@exchange.nvidia.com
+S:	Supported
+F:	drivers/misc/tegra-throughput.c
+F:	drivers/video/tegra/host/
+
+MEMORY
+M:	Krishna Reddy <vdumpa@nvidia.com>
+L:	sw-mobile-memory@exchange.nvidia.com
+S:	Supported
+F:	arch/arm/mach-tegra/board-*-memory.c
+F:	drivers/iommu/of_iommu.c
+F:	drivers/iommu/tegra-gart.c
+F:	drivers/iommu/tegra-smmu.c
+F:	drivers/platform/tegra/mc/
+F:	drivers/staging/android/ion/*
+F:	drivers/staging/android/ion/tegra/*
+F:	drivers/video/tegra/nvmap/*
+
+MULTIMEDIA
+M:	Niranjan Wartikar <nwartikar@nvidia.com>
+S:	Supported
+F:	drivers/media/platform/tegra/nvavp/*
+F:	drivers/platform/tegra/nvadsp/*
+F:	sound/soc/tegra/*
+F:	sound/soc/tegra-alt/*
+
+PLATFORM
+M:	Mallikarjun Kasoju <mkasoju@nvidia.com>
+L:	sw-mobile-kernel-platform@exchange.nvidia.com
+S:	Supported
+F:	arch/arm/mach-tegra/arb_sema.c
+F:	arch/arm/mach-tegra/baseband-xmm-power.c
+F:	arch/arm/mach-tegra/board-common.c
+F:	arch/arm/mach-tegra/board-info.c
+F:	arch/arm/mach-tegra/kfuse.c
+F:	drivers/misc/tegra-fuse/tegra_fuse.c
+F:	drivers/gpio/gpio-palmas.c
+F:	drivers/gpio/gpio-tegra.c
+F:	drivers/hwmon/*
+F:	drivers/leds/leds-max8831.c
+F:	drivers/misc/bcm4329_rfkill.c
+F:	drivers/misc/max1749.c
+F:	drivers/misc/nct1008.c
+F:	drivers/misc/tegra-baseband/bb-oem2.c
+F:	drivers/misc/tegra-baseband/bb-power.c
+F:	drivers/pinctrl/pinctrl-*.c
+F:	drivers/usb/serial/baseband_usb_chr.c
+
+PLATFORM POWER DELIVERY
+M:	Laxman Dewangan <ldewangan@nvidia.com>
+L:	sw-mobile-pmic@exchange.nvidia.com
+S:	Supported
+F:	drivers/mfd/tps65090.c
+F:	drivers/mfd/tps6591x.c
+F:	drivers/power/
+F:	drivers/regulator/
+
+POWER: CLOCKS AND VOLTAGE
+M:	Matt Longnecker <mlongnecker@nvidia.com>
+L:	sw-mobile-clocks@exchange.nvidia.com
+F:	arch/arm/mach-tegra/*_dvfs.c
+F:	arch/arm/mach-tegra/clocks_stats.c
+F:	arch/arm/mach-tegra/tegra*_speedo.c
+F:	arch/arm/mach-tegra/tegra_core_volt_cap.c
+F:	arch/arm/mach-tegra/tegra12_clocks.c
+F:	arch/arm/mach-tegra/dvfs.c
+F:	drivers/platform/tegra/*dvfs.c
+F:	drivers/platform/tegra/clock.c
+F:	drivers/platform/tegra/clocks_stats.c
+F:	drivers/platform/tegra/tegra*_speedo.c
+F:	drivers/platform/tegra/tegra*clock.c
+F:	drivers/platform/tegra/tegra3_actmon.c
+
+POWER: CPU
+M:	Matt Longnecker <mlongnecker@nvidia.com>
+L:	sw-mobile-cpu-power@exchange.nvidia.com
+S:	Supported
+F:	arch/arm/mach-tegra/cpuidle-t11x.c
+F:	arch/arm/mach-tegra/cpuidle.c
+F:	arch/arm/mach-tegra/cpuquiet.c
+F:	arch/arm/mach-tegra/sysfs-cluster.c
+F:	drivers/cpufreq/
+F:	drivers/cpuidle/
+X:	drivers/cpuidle/coupled.c
+F:	drivers/cpuquiet/
+F:	drivers/input/input-cfboost.c
+F:	drivers/platform/tegra/cpu-tegra.c
+F:	drivers/platform/tegra/sysfs-cluster.c
+
+POWER: THERMAL
+M:	Matt Longnecker <mlongnecker@nvidia.com>
+L:	sw-mobile-therm@exchange.nvidia.com
+S:	Supported
+F:	arch/arm64/mach-tegra/board-*-thermal.c
+F:	drivers/misc/tegra-fuse/tegra_fuse_tsosc.c
+F:	drivers/misc/therm_fan_est.c
+F:	drivers/platform/tegra/tegra_soctherm.c
+F:	drivers/platform/tegra/tegra_throttle.c
+F:	drivers/thermal/
+
+POWER: EDP AND FRIENDS
+M:	Matt Longnecker <mlongnecker@nvidia.com>
+L:	mobile-sys-edp@exchange.nvidia.com
+S:	Supported
+F:	arch/arm/mach-tegra/board-*-sysedp.c
+F:	arch/arm/mach-tegra/edp.c
+F:	arch/arm/mach-tegra/tegra_simon.c
+F:	arch/arm/mach-tegra/tegra_volt_cap.c
+F:	arch/arm/mach-tegra/tegra12_edp.c
+F:	drivers/edp/
+F:	drivers/misc/tegra_ppm.c
+F:	drivers/platform/tegra/cpu-edp.c
+F:	drivers/platform/tegra/gpu-edp.c
+F:	include/linux/tegra_ppm.h
+
+POWER: GATING AND STATES
+M:	Matt Longnecker <mlongnecker@nvidia.com>
+L:	sw-mobile-power@exchange.nvidia.com
+S:	Supported
+F:	arch/arm*/mach-tegra/pm*.c
+F:	arch/arm*/mach-tegra/powerdetect.c
+F:	arch/arm/mach-tegra/powergate*
+F:	arch/arm/mach-tegra/tegra-wakeups.c
+F:	arch/arm/mach-tegra/wakeups-t*.c
+F:	drivers/platform/tegra/pm.c
+F:	drivers/platform/tegra/pmc.c
+F:	drivers/platform/tegra/pm-irq.c
+F:	drivers/platform/tegra/pm-t3.c
+F:	drivers/platform/tegra/pm_domains.c
+F:	drivers/platform/tegra/powergate/
+
+SECURE OS:
+M:	Dennis Huang <denhuang@nvidia.com>
+L:	TMK@exchange.nvidia.com
+S:	Supported
+F:	security/tlk_driver/
+
+SECURITY
+M:	Venkat Moganty <vmoganty@nvidia.com>
+L:	sw-mobile-security@exchange.nvidia.com
+S:	Supported
+F:	drivers/crypto/*
+F:	drivers/misc/tegra-cryptodev.c
+
+SENSORS, INPUT AND TOUCHSCREEN:
+M:	Robert Collins <rcollins@nvidia.com>
+L:	sw-mobile-sensors@exchange.nvidia.com
+S:	Supported
+F:	arch/arm/mach-tegra/board-*-sensors.c
+F:	arch/arm/mach-tegra/board-touch-*.c
+F:	drivers/iio/imu/*
+F:	drivers/iio/light/*
+F:	drivers/iio/magnetometer/*
+F:	drivers/iio/pressure/*
+F:	drivers/input/touchscreen/*
+F:	drivers/input/misc/compass/*
+F:	drivers/input/misc/mpu/*
+F:	drivers/input/misc/pressure/*
+
+STORAGE
+M:	Venu Byravarasu <vbyravarasu@nvidia.com>
+L:	sw-mobile-system@exchange.nvidia.com
+S:	Supported
+F:	arch/arm/mach-tegra/board-*-sdhci.c
+F:	drivers/mmc/host/*
+
+SYSTEM
+M:	Laxman Dewangan <ldewangan@nvidia.com>
+L:	sw-mobile-system@exchange.nvidia.com
+S:	Supported
+F:	arch/arm/mach-tegra/ahb.c
+F:	arch/arm/mach-tegra/apbio.c
+F:	drivers/dma/tegra*
+F:	drivers/input/keyboard/tegra-kbc.c
+F:	drivers/pwm/pwm-tegra.c
+F:	drivers/watchdog/*
+
+USB
+M:	Venkat Moganty <vmoganty@nvidia.com>
+M:	Ashu Jha <ajha@nvidia.com>
+L:	sw-mobile-usb@exchange.nvidia.com
+S:	Supported
+F:	drivers/misc/tegra-baseband/tegra_usb_modem_power.c
+F:	drivers/usb/gadget/tegra_udc.c
+F:	drivers/usb/host/ehci-tegra.c
+F:	drivers/usb/host/xhci-tegra*
+F:	drivers/usb/phy/tegra-otg.c
+F:	drivers/usb/phy/tegra*usb_phy.c

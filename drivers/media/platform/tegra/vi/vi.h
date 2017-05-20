@@ -1,0 +1,166 @@
+/*
+ * drivers/video/tegra/host/vi/vi.h
+ *
+ * Tegra Graphics Host VI
+ *
+ * Copyright (c) 2012-2016, NVIDIA CORPORATION. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms and conditions of the GNU General Public License,
+ * version 2, as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#ifndef __NVHOST_VI_H__
+#define __NVHOST_VI_H__
+
+#include <linux/platform/tegra/isomgr.h>
+#include <linux/tegra-powergate.h>
+#include <linux/clk/tegra.h>
+
+#include "camera/mc_common.h"
+#include "chip_support.h"
+#include "csi/csi.h"
+
+#define VI_CFG_INTERRUPT_MASK_0				0x8c
+#define VI_CFG_INTERRUPT_STATUS_0			0x98
+
+#define CSI_CSI_PIXEL_PARSER_A_INTERRUPT_MASK_0		0x850
+#define CSI_CSI_PIXEL_PARSER_A_STATUS_0			0x854
+#define PPA_FIFO_OVRF					(1 << 5)
+
+#define CSI_CSI_PIXEL_PARSER_B_INTERRUPT_MASK_0		0x884
+#define CSI_CSI_PIXEL_PARSER_B_STATUS_0			0x888
+#define PPB_FIFO_OVRF					(1 << 5)
+
+#define VI_CSI_0_ERROR_STATUS				0x184
+#define VI_CSI_1_ERROR_STATUS				0x284
+#define VI_CSI_0_WD_CTRL				0x18c
+#define VI_CSI_1_WD_CTRL				0x28c
+#define VI_CSI_0_ERROR_INT_MASK_0			0x188
+#define VI_CSI_1_ERROR_INT_MASK_0			0x288
+
+#ifdef TEGRA_21X_OR_HIGHER_CONFIG
+#define VI_CSI_2_ERROR_STATUS				0x384
+#define VI_CSI_3_ERROR_STATUS				0x484
+#define VI_CSI_2_WD_CTRL				0x38c
+#define VI_CSI_3_WD_CTRL				0x48c
+#define VI_CSI_2_ERROR_INT_MASK_0			0x388
+#define VI_CSI_3_ERROR_INT_MASK_0			0x488
+#define VI_CSI_4_ERROR_STATUS				0x584
+#define VI_CSI_5_ERROR_STATUS				0x684
+#define VI_CSI_4_WD_CTRL				0x58c
+#define VI_CSI_5_WD_CTRL				0x68c
+#define VI_CSI_4_ERROR_INT_MASK_0			0x588
+#define VI_CSI_5_ERROR_INT_MASK_0			0x688
+
+#define CSI_PHY_CIL_COMMAND_0				0x908
+#define CSI_A_PHY_CIL_ENABLE_SHIFT			0
+#define CSI_B_PHY_CIL_ENABLE_SHIFT			8
+#define CSI1_PHY_CIL_COMMAND_0				0x1108
+#define CSI2_PHY_CIL_COMMAND_0				0x1908
+
+#define CSI1_CSI_PIXEL_PARSER_A_INTERRUPT_MASK_0	0x1050
+#define CSI1_CSI_PIXEL_PARSER_A_STATUS_0		0x1054
+#define CSI1_CSI_PIXEL_PARSER_B_INTERRUPT_MASK_0	0x1084
+#define CSI1_CSI_PIXEL_PARSER_B_STATUS_0		0x1088
+#define CSI2_CSI_PIXEL_PARSER_A_INTERRUPT_MASK_0	0x1850
+#define CSI2_CSI_PIXEL_PARSER_A_STATUS_0		0x1854
+#define CSI2_CSI_PIXEL_PARSER_B_INTERRUPT_MASK_0	0x1884
+#define CSI2_CSI_PIXEL_PARSER_B_STATUS_0		0x1888
+
+#define NUM_VI_WATCHDOG							6
+#else
+#define NUM_VI_WATCHDOG							2
+#endif
+
+typedef void (*callback)(void *);
+
+struct tegra_vi_stats {
+	atomic_t overflow;
+};
+
+struct tegra_vi_fops {
+	int (*soc_power_on)(struct tegra_mc_vi *vi);
+	void (*soc_power_off)(struct tegra_mc_vi *vi);
+};
+
+struct tegra_vi_channel_fops {
+	void (*soc_channel_ec_init)(struct tegra_channel *chan);
+	void (*soc_channel_ec_recover)(struct tegra_channel *chan);
+	int (*soc_channel_capture_setup)(struct tegra_channel *chan);
+	void (*soc_channel_capture_frame_init)(struct tegra_channel *chan,
+			struct tegra_channel_buffer *buf, u32 *thresh);
+	void (*soc_channel_capture_frame_enable)(struct tegra_channel *chan);
+	int (*soc_channel_capture_frame)(struct tegra_channel *chan,
+			struct timespec *ts, u32 *thresh);
+	int (*soc_channel_capture_done)(struct tegra_channel *chan,
+			struct tegra_channel_buffer *buf,
+			struct timespec *ts);
+	int (*soc_channel_error_status)(struct tegra_channel *chan);
+	int (*soc_channel_stop_streaming)(struct tegra_channel *chan);
+};
+
+struct tegra_vi_data {
+	struct nvhost_device_data *info;
+	struct tegra_vi_fops *vi_fops;
+	struct tegra_vi_channel_fops *channel_fops;
+	struct tegra_csi_fops *csi_fops;
+};
+
+struct vi {
+	struct tegra_camera *camera;
+	struct platform_device *ndev;
+	struct device *dev;
+	struct tegra_vi_data *data;
+	struct tegra_mc_vi mc_vi;
+	struct tegra_csi_device csi;
+
+	struct regulator *reg;
+	struct dentry *debugdir;
+	struct tegra_vi_stats vi_out;
+	struct workqueue_struct *vi_workqueue;
+	struct work_struct stats_work;
+	struct work_struct mfi_cb_work;
+#if defined(CONFIG_TEGRA_ISOMGR)
+	tegra_isomgr_handle isomgr_handle;
+#endif
+	int vi_irq;
+	uint vi_bypass_bw;
+	uint max_bw;
+	struct mutex update_la_lock;
+	bool master_deinitialized;
+	bool tpg_opened;
+	bool sensor_opened;
+	bool bypass;
+};
+
+extern const struct file_operations tegra_vi_ctrl_ops;
+int nvhost_vi_prepare_poweroff(struct platform_device *);
+int nvhost_vi_finalize_poweron(struct platform_device *);
+
+void nvhost_vi_reset_all(struct platform_device *);
+struct vi *tegra_vi_get(void);
+int vi_v4l2_set_la(struct vi *tegra_vi, u32 vi_bypass_bw, bool is_ioctl);
+
+#ifdef CONFIG_VIDEO_TEGRA_VI
+int tegra_vi_register_mfi_cb(callback cb, void *cb_arg);
+int tegra_vi_unregister_mfi_cb(void);
+#else
+static inline int tegra_vi_register_mfi_cb(callback cb, void *cb_arg)
+{
+	return -ENOSYS;
+}
+static inline int tegra_vi_unregister_mfi_cb(void)
+{
+	return -ENOSYS;
+}
+#endif
+#endif

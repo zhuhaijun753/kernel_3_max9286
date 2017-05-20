@@ -1,0 +1,128 @@
+* Nvidia sdhci-tegra controller
+
+This file documents differences between the core properties in mmc.txt
+and the properties used by the sdhci-tegra driver.
+
+Required properties:
+- compatible: Should be "nvidia,tegra210-sdhci"
+- reg: Specify start address and registers count details
+- interrupts: Specify the interrupts IRQ info for device
+- id: Specify device id
+
+Optional properties:
+- built-in: Add the check if the device is built-in device
+- bus-width: Specify device bus width details
+- tap-delay: Specify number of cycles to delay for reading data from device
+- nvidia,is-ddr-tap-delay: Specifies whether the tap value for ddr mode is available or not.
+- nvidia,ddr-tap-delay: Specify number of cycles to delay for reading data from device in ddr mode.
+- trim-delay: Specify number of cycles to delay for writing data to device
+- nvidia,is-ddr-trim-delay: Specifies whether the trim value for ddr mode is available or not.
+- ddr-trim-delay: Specify number of cycles to delay for writing data to device when in DDR mode
+- max-clk-limit: Specify the maximum clock limit for the device
+- ddr-clk-limit: Specify the maximum clock frequency in kHz for device in DDR mode
+- mmc-ocr-mask: Specify OCR register masking details
+- uhs-mask: Specify modes that are masked for the device
+	Mask HS200 mode: 0x20
+	Mask HS400 mode: 0x40
+	Mask SDR104 mode: 0x10
+	Mask SDR50 mode: 0x4
+	Mask DDR50 mode: 0x8
+- calib-3v3-offsets and calib-1v8-offsets: Specify caliberation settings at 3.3V and at 1.8V
+- auto_cal_step: Specify auto caliberation step value
+- pll_source: Specify list of clock parents
+- dqs-trim-delay: HS400 Tap value for incoming DQS path trimmer.
+- dqs-trim-delay-hs533: HS533 Tap value for incoming DQS path trimmer.
+- compad-vref-3v3 and compad-vref-1v8: used to control Vref_sel input of calibration pad. Should be set based on pads used for controller before starting pad drive strength calibration.
+- cd-gpios: details of GPIO port used for SD card detect
+- wp-gpios: details of GPIO port used for SD card write protect mode
+- power-gpios: details of GPIO port used to power up SDIO card
+- default-drv-type: Drive strength to select for SDIO devices is encoded as 8-bit char as follows
+	Drive strength Type B: 0x0
+	Drive strength Type A: 0x1
+	Drive strength Type C: 0x2
+	Drive strength Type D: 0x3
+- disable-clock-gate: flag when set disables sdmmc clock gating
+- power-off-rail: flag when set enables sdmmc reboot notifier
+- pwrdet-support: flag when set indicates the sdmmc controller instance needs power detect bit programming for voltage switching.
+- pwrdet-bit: Specify Tegra Power Management Controller power detect bit for the particular SDMMC controller instance. This field is specified only when the pwrdet-support is true
+- vddio_sdmmc-supply: regulator with this name
+- vddio_sd_slot-supply: regulator with this name
+- update-pinctrl-settings: flag when set using pictrl apis for updating sdmmc pins
+- nvidia,dll-calib-needed: DLL calibration is needed for SDMMC4 and SDMMC2 devices if they are enumerated
+in HS400 mode.
+- nvidia,disable-auto-cal: This flag when set will disable auto calibration
+- nvidia,en-io-trim-volt: Enable IO trimmer voltage
+- nvidia,is-emmc: Enable this flag for eMMC devices
+- nvidia,sd-device: Enable this flag for SD devices
+- nvidia,enable-ext-loopback: flag when set, enables external loopback
+- nvidia,limit-vddio-max-volt: enable this flag for sdmmc1/3 if it has Vddio 3.3v support.
+- nvidia,enable-hs533-mode: Set this Flag toenable HS533 mode.
+	---> eMMC card does not advertise HS533 mode support in device registers.
+	---> This flag has to be enabled only if the card supports HS533 mode, other wise the consequences are un-known.(Errors will be seen)
+- fixed-clock-freq: The first element is for ID mode. The rest of the entries are for different modes indexed as per ios timings.
+	ID MODE			0
+	MMC_TIMING_LEGACY	1
+	MMC_TIMING_MMC_HS	2
+	MMC_TIMING_SD_HS	3
+	MMC_TIMING_UHS_SDR12	4
+	MMC_TIMING_UHS_SDR25	5
+	MMC_TIMING_UHS_SDR50	6
+	MMC_TIMING_UHS_SDR104	7
+	MMC_TIMING_UHS_DDR50	8
+	MMC_TIMING_MMC_HS200	9
+	MMC_TIMING_MMC_HS400	10
+- nvidia,auto-cal-slew-override: flag to set AUTO_CAL_SLW_OVERRIDE bit in SDMMC_AUTO_CAL_CONFIG_0 register.
+- nvidia,enable-cq: Set this flag to enable CQ.
+- nvidia,runtime-pm-type: Flag indicates the runtime power management implementation to use as follows:
+	---> 0 indicates runtime power management implementation is used along with an independent custom delayed clock gate implementation.
+	---> 1 indicates MMC runtime power management coupled clock gate is enabled.
+	When this flag is not specified explicitly the value is assumed to be 0.
+- cd_wakeup_incapable: Set this flag to disable card detect event as wake source.
+- nvidia,enable-strobe-mode: Enable enhance strobe mode when eMMC device runs at HS400 mode.
+- nvidia,en-periodic-calib: Enable periodic calibration support for sdmmc1/sdmmc3. Auto calibration sequence will be run at interval of 100ms during sdmmc1/sdmmc3 interfaces are active.
+- nvidia,sdmmc-pin-gpios: Pass sdmmc pin details for configuring them to GPIO mode during device suspend.
+- nvidia,bcm-sdio-suppress-kso-dump: Flag used by Wifi/SDIO instance of sdmmc to prevent register dump in KSO sleep mode.
+
+Example:
+
+	sdhci@700b0600 {
+		compatible = "nvidia,tegra210-sdhci";
+		reg = <0x0 0x700b0600 0x0 0x200>;
+		interrupts = < 0 31 0x04 >;
+		tap-delay = <4>;
+		trim-delay = <3>;
+		mmc-ocr-mask = <0>;
+		max-clk-limit = <200000000>;
+		uhs-mask = <0x20>; /* Mask HS200 */
+		bus-width = <8>;
+		id = <3>;
+		pll_source = "pll_m", "pll_p";
+		built-in;
+		compad-vref-3v3 = <0x7>;
+		compad-vref-1v8 = <0x7>;
+		disable-clock-gate;
+		calib-3v3-offsets = <0x0202>;
+		calib-1v8-offsets = <0x0202>;
+		vddio_sdmmc-supply = <&max77620_sd3>;
+		nvidia,dll-calib-needed;
+		nvidia,runtime-pm-type = <1>;
+		status = "okay";
+		fixed-clock-freq = <25500000 25500000 24000000 47000000 24000000 47000000 94000000 204000000 0 0 0>;
+	};
+
+	sdhci@700b0000 {
+		tap-delay = <0>;
+		trim-delay = <2>;
+		mmc-ocr-mask = <3>;
+		max-clk-limit = <136000000>;
+		ddr-clk-limit = <41000000>;
+		uhs-mask = <0x8>;
+		bus-width = <4>;
+		id = <0>;
+		pll_source = "pll_m", "pll_p";
+		calib-3v3-offsets = <0x7676>;
+		calib-1v8-offsets = <0x7676>;
+		default-drive-type = <1>;
+		vddio_sd_slot-supply = <&vdd_1v8>;
+		status = "okay";
+	};
